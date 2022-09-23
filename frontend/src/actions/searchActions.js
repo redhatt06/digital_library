@@ -20,6 +20,10 @@ const getSearchData = createAsyncThunk(
         config
       );
 
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
       return data;
     } catch (err) {
       if (err.response && err.response.data.message) {

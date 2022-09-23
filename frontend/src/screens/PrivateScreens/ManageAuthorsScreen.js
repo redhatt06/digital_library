@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../../App.css';
-import { reset } from '../../reducers/authorReducer';
+import { resetOps } from '../../reducers/authorReducer';
 import {
   Table,
   TableBody,
@@ -44,6 +44,7 @@ export default function ManageAuthorsScreen(props) {
   //Dispatch delete author action with given id
   const handleDelete = (id) => {
     dispatch(deleteAuthor(id));
+    dispatch(listAuthors());
   };
   //Dispatch update author action with given form data and dispatch the updated list of authors
   const submitHandler = (e) => {
@@ -59,7 +60,7 @@ export default function ManageAuthorsScreen(props) {
   };
   //Reset the update state after successfull update
   const handleALertClose = () => {
-    dispatch(reset());
+    dispatch(resetOps());
   };
   return (
     <>
@@ -71,10 +72,16 @@ export default function ManageAuthorsScreen(props) {
         Back to managament
       </Button>
       <Snackbar
-        open={updated}
+        open={!(updated === null)}
         onClose={handleALertClose}
         autoHideDuration={3000}
         message={updated}
+      />
+      <Snackbar
+        open={!(error === null)}
+        onClose={handleALertClose}
+        autoHideDuration={3000}
+        message={error}
       />
       <div className="container-table">
         <Grid
@@ -113,27 +120,27 @@ export default function ManageAuthorsScreen(props) {
                       <p>{error}</p>
                     ) : (
                       response &&
-                      response.map((author) => (
+                      response?.map((author) => (
                         <TableRow
-                          key={author.author_id + '_row'}
+                          key={author?.author_id + '_row'}
                           sx={{
                             '&:last-child td, &:last-child th': { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {author.author_id}
+                            {author?.author_id}
                           </TableCell>
-                          <TableCell align="right">{author.name}</TableCell>
+                          <TableCell align="right">{author?.name}</TableCell>
                           <TableCell align="right">
                             <Button
                               color="primary"
-                              onClick={() => handleUpdate(author.author_id)}
+                              onClick={() => handleUpdate(author?.author_id)}
                             >
                               Update
                             </Button>
                             <Button
                               color="error"
-                              onClick={() => handleDelete(author.author_id)}
+                              onClick={() => handleDelete(author?.author_id)}
                             >
                               Delete
                             </Button>

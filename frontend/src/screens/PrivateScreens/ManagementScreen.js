@@ -69,6 +69,32 @@ export default function ManagamentScreen(props) {
                 />
               </ListItemButton>
             </ListItem>
+            <ListItem color="secondary" disablePadding>
+              <ListItemButton>
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontSize: '2rem',
+                    color: 'secondary',
+                  }}
+                  sx={{ textAlign: 'center' }}
+                  onClick={() => navigate('/searchBookById')}
+                  primary="Search Book by ID"
+                />
+              </ListItemButton>
+            </ListItem>
+            <ListItem color="secondary" disablePadding>
+              <ListItemButton>
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontSize: '2rem',
+                    color: 'secondary',
+                  }}
+                  sx={{ textAlign: 'center' }}
+                  onClick={() => navigate('/searchAuthorById')}
+                  primary="Search Author by ID"
+                />
+              </ListItemButton>
+            </ListItem>
           </List>
         </Box>
       </div>

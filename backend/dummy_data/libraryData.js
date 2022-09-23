@@ -105,6 +105,16 @@ const libraryData = [
     author: 'Stephen King',
     book: 'Joyland',
   },
+  {
+    id: 18,
+    author: 'Author of Steve Jobs',
+    book: 'Steve Jobs',
+  },
+  {
+    id: 19,
+    author: 'Steve Jobs',
+    book: 'Book of Steve Jobs',
+  },
 ];
 
 export default libraryData;

@@ -9,8 +9,6 @@ const initialState = {
   searchData: null,
   error: null,
   success: false,
-  type: null,
-  multiple: false,
 };
 
 //create search slice with required reducers and initial state
@@ -21,7 +19,7 @@ const searchSlice = createSlice({
     reset: (state) => {
       state.loading = false;
       state.success = false;
-      state.error = false;
+      state.error = null;
       state.searchData = null;
     },
   },
@@ -32,13 +30,11 @@ const searchSlice = createSlice({
     },
     [getSearchData.fulfilled]: (state, { payload }) => {
       state.loading = false;
-      state.searchData = payload.data[0];
-      state.type = payload.type;
-      state.multiple = payload.multiple;
+      state.searchData = payload.data;
     },
     [getSearchData.rejected]: (state, { payload }) => {
       state.loading = false;
-      state.error = payload;
+      state.error = payload.error;
     },
   },
 });

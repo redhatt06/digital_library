@@ -21,6 +21,10 @@ const userLogin = createAsyncThunk(
         { username, password },
         config
       );
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
       localStorage.setItem('userToken', data.userToken);
       localStorage.setItem('userInfo', data);
       return data;
@@ -39,58 +43,5 @@ const logout = createAsyncThunk('user/logout', async () => {
   localStorage.removeItem('userInfo');
   localStorage.removeItem('userToken');
 });
-
-// const userRegister = createAsyncThunk(
-//   'user/register',
-//   async ({ username, password, firstName, lastName }, { rejectWithValue }) => {
-//     try {
-//       const config = {
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       };
-
-//       const { data } = await axios.post(
-//         'api/users/register',
-//         { username, password, firstName, lastName },
-//         config
-//       );
-//       localStorage.setItem('userToken', data.userToken);
-//       return data;
-//     } catch (err) {
-//       if (err.response && err.response.data.message) {
-//         return rejectWithValue(err.response.data.message);
-//       } else {
-//         return rejectWithValue(err.message);
-//       }
-//     }
-//   }
-// );
-
-// const getUserInfo = createAsyncThunk(
-//   'user/getUserInfo',
-//   async (arg, { getState, rejectWithValue }) => {
-//     try {
-//       const user = getState();
-//       const config = {
-//         headers: {
-//           Authorization: `Bearer ${user.userToken}`,
-//         },
-//       };
-
-//       const { data } = await axios.post(
-//         `api/users/getUserInfo/${user.userInfo.username}`,
-//         config
-//       );
-//       return data;
-//     } catch (err) {
-//       if (err.response && err.response.data.message) {
-//         return rejectWithValue(err.response.data.message);
-//       } else {
-//         return rejectWithValue(err.message);
-//       }
-//     }
-//   }
-// );
 
 export { userLogin, logout };

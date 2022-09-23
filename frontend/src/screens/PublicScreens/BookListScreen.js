@@ -80,17 +80,17 @@ export default function BookListScreen(props) {
                       <p>{error}</p>
                     ) : (
                       response &&
-                      response.map((book) => (
+                      response?.map((book) => (
                         <TableRow
-                          key={book.book_id + '_row'}
+                          key={book?.book_id + '_row'}
                           sx={{
                             '&:last-child td, &:last-child th': { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {book.book_id}
+                            {book?.book_id}
                           </TableCell>
-                          <TableCell align="right">{book.title}</TableCell>
+                          <TableCell align="right">{book?.title}</TableCell>
                         </TableRow>
                       ))
                     )}

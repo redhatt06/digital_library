@@ -12,12 +12,10 @@ userRouter.post(
   '/login',
   expressAsyncHandler(async (req, res) => {
     const signedinUser = await User.findByPk(req.body.username, { raw: true });
-    console.log(signedinUser);
     if (
       signedinUser &&
       bcrypt.compareSync(req.body.password, signedinUser.password)
     ) {
-      console.log('beforeRes ' + getToken(signedinUser));
       res.send({
         username: signedinUser.username,
         firstName: signedinUser.first_name,
@@ -26,7 +24,7 @@ userRouter.post(
         userToken: getToken(signedinUser),
       });
     } else {
-      res.status(401).send({ message: 'Invalid User or Password!' });
+      res.send({ error: 'Invalid User or Password!' });
     }
   })
 );

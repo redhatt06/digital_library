@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   addAuthor,
   deleteAuthor,
+  getAuthorById,
   getAuthorsWithMostBooks,
   listAuthors,
   updateAuthor,
@@ -28,6 +29,11 @@ const authorSlice = createSlice({
       state.loading = false;
       state.success = false;
       state.error = false;
+      state.deleted = null;
+      state.updated = null;
+      state.response = null;
+    },
+    resetOps: (state) => {
       state.deleted = null;
       state.updated = null;
     },
@@ -69,6 +75,18 @@ const authorSlice = createSlice({
       state.loading = false;
       state.error = payload;
     },
+    [getAuthorById.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [getAuthorById.fulfilled]: (state, { payload }) => {
+      state.loading = false;
+      state.response = payload;
+    },
+    [getAuthorById.rejected]: (state, { payload }) => {
+      state.loading = false;
+      state.error = payload;
+    },
     [updateAuthor.pending]: (state) => {
       state.loading = true;
       state.error = null;
@@ -95,5 +113,5 @@ const authorSlice = createSlice({
     },
   },
 });
-export const { reset } = authorSlice.actions;
+export const { reset, resetOps } = authorSlice.actions;
 export default authorSlice.reducer;

@@ -22,13 +22,13 @@ bookRouter.get(
         if (books) {
           res.json(books);
         } else {
-          res.status(404).send({
+          res.send({
             message: 'Could not find any books in the database',
           });
         }
       })
       .catch((err) => {
-        res.send(err.message);
+        res.send({ error: err.message });
       });
   })
 );
@@ -36,29 +36,35 @@ bookRouter.get(
 //Fetch and send a book with given ID
 bookRouter.get(
   '/:id',
+  isAuth,
   expressAsyncHandler(async (req, res) => {
-    Book.findByPk(req.params.id, {
+    const id = req.params.id;
+    Book.findByPk(id, {
       include: [
         {
           model: Author,
           through: { attributes: ['book_id', 'author_id'] },
         },
       ],
-    }).then((book) => {
-      if (book) {
-        const bookAuthors = book['Authors'].map((author) => {
-          return { id: author.author_id, name: author.name };
-        });
-        res.send({
-          book: { id: book.book_id, title: book.title },
-          authors: bookAuthors,
-        });
-      } else {
-        res.status(404).send({
-          message: `Could not find book with ID:${id} in the database.`,
-        });
-      }
-    });
+    })
+      .then((book) => {
+        if (book) {
+          const bookAuthors = book['Authors'].map((author) => {
+            return { id: author.author_id, name: author.name };
+          });
+          res.send({
+            book: { id: book.book_id, title: book.title },
+            authors: bookAuthors,
+          });
+        } else {
+          res.send({
+            error: `Could not find book with ID:${id} in the database.`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.send({ error: err.message });
+      });
   })
 );
 
@@ -76,13 +82,13 @@ bookRouter.get(
         if (books) {
           res.json(books);
         } else {
-          res.status(404).send({
+          res.send({
             message: 'No result found for the query.',
           });
         }
       })
       .catch((err) => {
-        res.send(err.message);
+        res.send({ error: err.message });
       });
   })
 );
@@ -94,13 +100,13 @@ bookRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
-      const id = req.body.id;
-      const title = req.body.title;
-      const authors = req.body.authors;
-      const authorList = authors.replace(/ /g, '').split(',');
-      var promises = [];
-
       await db.transaction(async (t) => {
+        const id = req.body.id;
+        const title = req.body.title;
+        const authors = req.body.authors;
+        const authorList = authors.replace(/ /g, '').split(',');
+        var promises = [];
+
         const [book, created] = await Book.findOrCreate({
           raw: true,
           where: { book_id: id, title: title },
@@ -117,9 +123,9 @@ bookRouter.post(
               await AuthorBook.findOrCreate({
                 where: {
                   author_id: authorCreated[0].author_id,
-                  book_id: book.book_id,
-                  transaction: t,
+                  book_id: id,
                 },
+                transaction: t,
               })
             );
           }
@@ -130,19 +136,19 @@ bookRouter.post(
             transaction: t,
           });
           await AuthorBook.findOrCreate({
-            where: { author_id: author[0].author_id, book_id: book.book_id },
+            where: { author_id: author[0].author_id, book_id: id },
             transaction: t,
           });
         }
 
         created
           ? res.send(book)
-          : res.status(404).send({
-              message: 'Book already exists in the database',
+          : res.send({
+              error: 'Book already exists in the database',
             });
       });
     } catch (err) {
-      res.send(err);
+      res.send({ error: err.message });
     }
   })
 );
@@ -160,17 +166,18 @@ bookRouter.delete(
           transaction: t,
         });
         await Book.destroy({
-          where: { book_id: req.params.id, transaction: t },
+          where: { book_id: req.params.id },
+          transaction: t,
         }).then((deleted) => {
           deleted
             ? res.send(true)
-            : res.status(404).send({
-                message: 'Could not find any books in the database',
+            : res.send({
+                error: 'Could not find any books in the database',
               });
         });
       });
     } catch (err) {
-      res.send(err.message);
+      res.send({ error: err.message });
     }
   })
 );
@@ -225,11 +232,11 @@ bookRouter.put(
           });
         }
 
-        res.status(200).send('Successfully Updated');
+        res.send('Successfully Updated');
       });
     } catch (err) {
       console.log(err);
-      res.send(err.message);
+      res.send({ error: err.message });
     }
   })
 );

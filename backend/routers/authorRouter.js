@@ -22,40 +22,45 @@ authorRouter.get(
       .then((author) => {
         author
           ? res.send(author)
-          : res.status(404).send({
+          : res.send({
               message: 'Could not find any books in the database',
             });
       })
-      .catch((err) => res.send(err.message));
+      .catch((err) => res.send({ error: err.message }));
   })
 );
 
 //GET
 //Fetch and send record of an author with given ID
-authorRouter.get('/:id', async (req, res) => {
-  Author.findByPk(req.params.id, {
-    include: [
-      {
-        model: Book,
-        through: { attributes: ['book_id', 'author_id'] },
-      },
-    ],
-  })
-    .then((data) => {
-      data
-        ? res.send({
-            author: { id: data.author_id, title: data.name },
-            books: data['Books'].map((book) => {
-              return { id: book.book_id, title: book.title };
-            }),
-          })
-        : res.status(404).send({
-            message:
-              'There is no record of the specified author in the library database',
-          });
+authorRouter.get(
+  '/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const id = req.params.id;
+    Author.findByPk(id, {
+      include: [
+        {
+          model: Book,
+          through: { attributes: ['book_id', 'author_id'] },
+        },
+      ],
     })
-    .catch((err) => res.send(err.message));
-});
+      .then((data) => {
+        data
+          ? res.send({
+              author: { id: data.author_id, name: data.name },
+              books: data['Books'].map((book) => {
+                return { id: book.book_id, title: book.title };
+              }),
+            })
+          : res.send({
+              error:
+                'There is no record of the specified author in the library database',
+            });
+      })
+      .catch((err) => res.send({ error: err.message }));
+  })
+);
 
 //GET
 //Fetch and send authors with most books written
@@ -75,13 +80,13 @@ authorRouter.get(
         if (authors) {
           res.send(authors);
         } else {
-          res.status(404).send({
-            message: 'No results found!',
+          res.send({
+            error: 'No results found!',
           });
         }
       })
       .catch((err) => {
-        res.send(err.message);
+        res.send({ error: err.message });
       });
   })
 );
@@ -100,14 +105,14 @@ authorRouter.delete(
           (deleted) => {
             deleted
               ? res.send(true)
-              : res.status(404).send({
-                  message: `Could not find author with ID:${id} in the database.`,
+              : res.send({
+                  error: `Could not find author with ID:${id} in the database.`,
                 });
           }
         );
       });
     } catch (err) {
-      res.send(err.message);
+      res.send({ error: err.message });
     }
   })
 );
@@ -127,10 +132,10 @@ authorRouter.put(
           { where: { author_id: id }, transaction: t }
         );
 
-        res.status(200).send('Successfully Updated');
+        res.send('Successfully Updated');
       });
     } catch (err) {
-      res.send(err.message);
+      res.send({ error: err.message });
     }
   })
 );

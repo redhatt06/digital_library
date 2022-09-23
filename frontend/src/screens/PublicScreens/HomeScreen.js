@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import '../../App.css';
 import {
@@ -9,13 +9,14 @@ import {
   CardContent,
   CardActionArea,
   Typography,
+  Grid,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSearchData } from '../../actions/searchActions';
-
+import { reset } from '../../reducers/searchReducer.js';
 const theme = createTheme({
   palette: {
     primary: {
@@ -37,14 +38,16 @@ const theme = createTheme({
 export default function HomeScreen(props) {
   const [search, setSearch] = useState(null);
   const dispatch = useDispatch();
-  const { loading, error, searchData, type } = useSelector(
-    (state) => state.search
-  );
+  const { loading, error, searchData } = useSelector((state) => state.search);
   //Dispatch the results of search
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(getSearchData(search));
   };
+
+  useEffect(() => {
+    dispatch(reset());
+  }, []);
 
   return (
     <div className="main">
@@ -82,43 +85,59 @@ export default function HomeScreen(props) {
             </IconButton>
           </Paper>
         </ThemeProvider>
-        <div className="searchDisplay">
-          {loading ? (
-            <p>loading</p>
-          ) : error ? (
-            <p>{error}</p>
-          ) : (
-            searchData && (
-              <Card sx={{ maxWidth: 345 }}>
-                <CardActionArea>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {type === 'b'
-                        ? searchData.book.title
-                        : searchData.author.name}
-                    </Typography>
-                    {type === 'b'
-                      ? searchData.authors.map((author) => {
-                          return (
-                            <Typography variant="body2" color="text.secondary">
-                              {author.name}
-                            </Typography>
-                          );
-                        })
-                      : searchData.books.map((book) => {
-                          return (
-                            <Typography variant="body2" color="text.secondary">
-                              {book.title}
-                            </Typography>
-                          );
-                        })}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            )
-          )}
-        </div>
       </div>
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        rowSpacing={1}
+        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+      >
+        {loading ? (
+          <p>loading</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          searchData &&
+          searchData?.map((data) => {
+            return (
+              <Grid item>
+                <Card sx={{ minWidth: 300, maxWidth: 345, margin: '2rem' }}>
+                  <CardActionArea>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {data?.type === 'b' ? data?.title : data?.name}
+                      </Typography>
+                      {data?.type === 'b'
+                        ? data?.authors?.map((author) => {
+                            return (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {author}
+                              </Typography>
+                            );
+                          })
+                        : data?.books?.map((book) => {
+                            return (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {book}
+                              </Typography>
+                            );
+                          })}
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            );
+          })
+        )}
+      </Grid>
     </div>
   );
 }

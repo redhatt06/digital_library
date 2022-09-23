@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../../App.css';
-import { reset } from '../../reducers/bookReducer';
+import { resetOps } from '../../reducers/bookReducer';
 import {
   Table,
   TableBody,
@@ -43,6 +43,7 @@ export default function ManageBooksScreen(props) {
   //Dispatch delete book action with given id
   const handleDelete = (id) => {
     dispatch(deleteBook(id));
+    dispatch(listBooks());
   };
   //Dispatch update book action with given form data and dispatch the updated list of books
   const submitHandler = (e) => {
@@ -58,7 +59,7 @@ export default function ManageBooksScreen(props) {
   };
   //Reset the update state after successfull update
   const handleALertClose = () => {
-    dispatch(reset());
+    dispatch(resetOps());
   };
   return (
     <>
@@ -70,10 +71,16 @@ export default function ManageBooksScreen(props) {
         Back to managament
       </Button>
       <Snackbar
-        open={updated}
+        open={!(updated === null)}
         onClose={handleALertClose}
         autoHideDuration={3000}
         message="Update was successful."
+      />
+      <Snackbar
+        open={!(error === null)}
+        onClose={handleALertClose}
+        autoHideDuration={3000}
+        message={error}
       />
       <div className="container-table">
         <Grid
@@ -112,27 +119,27 @@ export default function ManageBooksScreen(props) {
                       <p>{error}</p>
                     ) : (
                       response &&
-                      response.map((book) => (
+                      response?.map((book) => (
                         <TableRow
-                          key={book.book_id + '_row'}
+                          key={book?.book_id + '_row'}
                           sx={{
                             '&:last-child td, &:last-child th': { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {book.book_id}
+                            {book?.book_id}
                           </TableCell>
                           <TableCell align="right">{book.title}</TableCell>
                           <TableCell align="right">
                             <Button
                               color="primary"
-                              onClick={() => handleUpdate(book.book_id)}
+                              onClick={() => handleUpdate(book?.book_id)}
                             >
                               Update
                             </Button>
                             <Button
                               color="error"
-                              onClick={() => handleDelete(book.book_id)}
+                              onClick={() => handleDelete(book?.book_id)}
                             >
                               Delete
                             </Button>

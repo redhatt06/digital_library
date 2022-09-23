@@ -78,15 +78,15 @@ export default function AuthorListScreen(props) {
                       <p>{error}</p>
                     ) : (
                       response &&
-                      response.map((author) => (
+                      response?.map((author) => (
                         <TableRow
-                          key={author.author_id + '_row'}
+                          key={author?.author_id + '_row'}
                           sx={{
                             '&:last-child td, &:last-child th': { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {author.author_id}
+                            {author?.author_id}
                           </TableCell>
                           <TableCell align="right">{author.name}</TableCell>
                         </TableRow>

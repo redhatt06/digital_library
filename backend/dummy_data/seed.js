@@ -6,12 +6,15 @@ import { Sequelize } from 'sequelize';
 import userData from './userData.js';
 import User from '../models/user.js';
 import bcrypt from 'bcrypt';
+import db from '../database.js';
 
 //This script creates the defined tables and fills them with the dummy data for test purposes
 //Start this script before and while testing the database.
 
 export default async function seed() {
   try {
+    await db.sync({ force: true });
+
     var promises = [];
     for (const data of libraryData) {
       const author = await Author.findOrCreate({
@@ -29,7 +32,7 @@ export default async function seed() {
       );
     }
     Promise.all(promises);
-    await User.sync();
+
     for (const data of userData) {
       await User.findOrCreate({
         where: {
@@ -41,7 +44,6 @@ export default async function seed() {
         },
       });
     }
-    console.log('Success!');
   } catch (errors) {
     if (errors instanceof Sequelize.UniqueConstraintError) {
       console.log('This author and book is already in library records!');

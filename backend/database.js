@@ -1,13 +1,13 @@
 import { Sequelize } from 'sequelize';
-import config from './utils/config';
+import config from './utils/config.js';
 
 //Establishes the database connection using Sequilize library
 const db = new Sequelize(
-  'libraryDB',
+  config.POSTGRES_DB_NAME,
   config.POSTGRES_USERNAME,
   config.POSTGRES_PASSWORD,
   {
-    host: 'localhost',
+    host: config.POSTGRES_HOST,
     dialect: 'postgres',
     logging: false,
   }

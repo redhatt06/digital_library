@@ -9,9 +9,7 @@ import { reset } from '../../reducers/bookReducer';
 
 //Screen for adding books, private to only authorized users
 export default function AddBookScreen(props) {
-  const { loading, error, response, added } = useSelector(
-    (state) => state.book
-  );
+  const { error, added } = useSelector((state) => state.book);
   const dispatch = useDispatch();
   const [id, setId] = useState('');
   const [title, setTitle] = useState('');
@@ -29,10 +27,16 @@ export default function AddBookScreen(props) {
   return (
     <>
       <Snackbar
-        open={added}
+        open={!(added === null)}
         onClose={handleALertClose}
         autoHideDuration={3000}
         message={added}
+      />
+      <Snackbar
+        open={!(error === null)}
+        onClose={handleALertClose}
+        autoHideDuration={3000}
+        message={error}
       />
       <Button
         onClick={() => navigate('/management')}

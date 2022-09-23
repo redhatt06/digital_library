@@ -63,7 +63,9 @@ a {
   width: 75%;
 }
 .searchDisplay {
+  margin: 2rem;
   margin-top: 4rem;
+
   justify-content: center;
 }
 
@@ -76,4 +78,20 @@ a {
 }
 .links div {
   margin: 0 1rem;
+}
+
+@media screen and (max-height: 1200px) {
+  .container-flex {
+    padding-top: 10rem;
+  }
+}
+@media screen and (max-height: 750px) {
+  .container-flex {
+    padding-top: 2rem;
+  }
+}
+@media screen and (max-height: 400px) {
+  .container-flex {
+    padding-top: 0;
+  }
 }

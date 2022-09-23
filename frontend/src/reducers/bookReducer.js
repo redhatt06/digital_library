@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   addBook,
   deleteBook,
+  getBookById,
   getBooksWithMoreThanThreeAuthors,
   listBooks,
   updateBook,
@@ -31,6 +32,12 @@ const bookSlice = createSlice({
       state.deleted = null;
       state.updated = null;
       state.added = null;
+      state.response = null;
+    },
+    resetOps: (state) => {
+      state.deleted = null;
+      state.updated = null;
+      state.added = null;
     },
   },
   extraReducers: {
@@ -41,7 +48,7 @@ const bookSlice = createSlice({
     [addBook.fulfilled]: (state, { payload }) => {
       state.loading = false;
       state.response = payload;
-      state.added = 'Book is created successfully!';
+      state.added = 'Book is successfully created.';
     },
     [addBook.rejected]: (state, { payload }) => {
       state.loading = false;
@@ -72,6 +79,18 @@ const bookSlice = createSlice({
       state.loading = false;
       state.error = payload;
     },
+    [getBookById.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [getBookById.fulfilled]: (state, { payload }) => {
+      state.loading = false;
+      state.response = payload;
+    },
+    [getBookById.rejected]: (state, { payload }) => {
+      state.loading = false;
+      state.error = payload;
+    },
     [updateBook.pending]: (state) => {
       state.loading = true;
       state.error = null;
@@ -98,5 +117,5 @@ const bookSlice = createSlice({
     },
   },
 });
-export const { reset } = bookSlice.actions;
+export const { reset, resetOps } = bookSlice.actions;
 export default bookSlice.reducer;

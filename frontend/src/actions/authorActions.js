@@ -15,6 +15,39 @@ const listAuthors = createAsyncThunk(
       };
       const { data } = await axios.get('api/authors', config);
 
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
+      return data;
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue(err.message);
+      }
+    }
+  }
+);
+//Fetches an author by its id through API
+//Returns an author object with its books
+const getAuthorById = createAsyncThunk(
+  'authors/id',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().user.userToken;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.get(`api/authors/${id}`, config);
+
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
       return data;
     } catch (err) {
       if (err.response && err.response.data.message) {
@@ -38,6 +71,10 @@ const getAuthorsWithMostBooks = createAsyncThunk(
         },
       };
       const { data } = await axios.get('api/authors/query/mostbooks', config);
+
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
 
       return data;
     } catch (err) {
@@ -69,8 +106,8 @@ const addAuthor = createAsyncThunk(
         { name, books },
         config
       );
-      if (data.errors) {
-        return rejectWithValue(data.errors[0].message);
+      if (data.error) {
+        return rejectWithValue(data.error);
       }
 
       return data;
@@ -99,6 +136,10 @@ const deleteAuthor = createAsyncThunk(
       };
       const { data } = await axios.delete(`api/authors/${id}`, config);
 
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
       return data;
     } catch (err) {
       if (err.response && err.response.data.message) {
@@ -125,6 +166,10 @@ const updateAuthor = createAsyncThunk(
       };
       const { data } = await axios.put('api/authors', { id, name }, config);
 
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
       return data;
     } catch (err) {
       if (err.response && err.response.data.message) {
@@ -142,4 +187,5 @@ export {
   deleteAuthor,
   updateAuthor,
   getAuthorsWithMostBooks,
+  getAuthorById,
 };

@@ -38,8 +38,9 @@ app.use('/api/authors', authorRouter);
 app.use('/api/users', userRouter);
 app.use('/api/search', searchRouter);
 app.get('/api/seed', async (req, res) => {
-  seed();
-  res.send('Test data has been successfully created.');
+  seed()
+    .then(() => res.send('Test data has been successfully created.'))
+    .catch((err) => res.send('An error occured, please try again.'));
 });
 //Static route for react build folder
 const __dirname = path.resolve();

@@ -20,6 +20,8 @@ WORKDIR /usr/src/app/backend
 
 COPY ./backend/ ./
 
+ENV POSTGRES_HOST=postgres
+
 EXPOSE 5000
 
 CMD ["npm", "run", "start"]

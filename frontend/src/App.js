@@ -11,6 +11,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './routing/PrivateRoute.js';
 import BookListScreen from './screens/PublicScreens/BookListScreen';
 import AuthorListScreen from './screens/PublicScreens/AuthorListScreen';
+import SearchBookByIdScreen from './screens/PrivateScreens/SearchBookByIdScreen';
+import SearchAuthorByIdScreen from './screens/PrivateScreens/SearchAuthorByIdScreen';
 
 function App() {
   return (
@@ -28,6 +30,11 @@ function App() {
             <Route path="/management" element={<ManagementScreen />} />
             <Route path="/managebooks" element={<ManageBooksScreen />} />
             <Route path="/manageauthors" element={<ManageAuthorsScreen />} />
+            <Route path="/searchBookById" element={<SearchBookByIdScreen />} />
+            <Route
+              path="/searchAuthorById"
+              element={<SearchAuthorByIdScreen />}
+            />
           </Route>
         </Routes>
       </div>

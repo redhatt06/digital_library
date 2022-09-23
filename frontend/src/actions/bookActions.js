@@ -15,6 +15,40 @@ const listBooks = createAsyncThunk(
       };
       const { data } = await axios.get('api/books', config);
 
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
+      return data;
+    } catch (err) {
+      if (err.response && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue(err.message);
+      }
+    }
+  }
+);
+
+//Fetches a book with by its id through API
+//Returns a book object with its autors
+const getBookById = createAsyncThunk(
+  'books/id',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().user.userToken;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.get(`api/books/${id}`, config);
+
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
+
       return data;
     } catch (err) {
       if (err.response && err.response.data.message) {
@@ -43,6 +77,10 @@ const getBooksWithMoreThanThreeAuthors = createAsyncThunk(
         'api/books/query/more_than_three_authors',
         config
       );
+
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
 
       return data;
     } catch (err) {
@@ -74,8 +112,8 @@ const addBook = createAsyncThunk(
         { id, title, authors },
         config
       );
-      if (data.errors) {
-        return rejectWithValue(data.errors[0].message);
+      if (data.error) {
+        return rejectWithValue(data.error);
       }
 
       return data;
@@ -104,6 +142,10 @@ const deleteBook = createAsyncThunk(
         },
       };
       const { data } = await axios.delete(`api/books/${id}`, config);
+
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
 
       return data;
     } catch (err) {
@@ -135,6 +177,9 @@ const updateBook = createAsyncThunk(
         { id, title, authors },
         config
       );
+      if (data.error) {
+        return rejectWithValue(data.error);
+      }
 
       return data;
     } catch (err) {
@@ -153,4 +198,5 @@ export {
   deleteBook,
   updateBook,
   getBooksWithMoreThanThreeAuthors,
+  getBookById,
 };
