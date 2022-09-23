@@ -55,6 +55,8 @@ The following command installs all dependencies and builds the app and starts se
 ```javascript
 npm run serve
 ```
+## Test Data
+Make a GET Request to ```localhost:5000/api/seed``` to create or refresh test data. Then you are ready to test the app.
 
 # Software Architecture
 ## App Architecture
