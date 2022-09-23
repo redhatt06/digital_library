@@ -2,6 +2,8 @@ FROM node:16.15.1-alpine
 
 WORKDIR /usr/src/app
 
+ENV POSTGRES_HOST=postgres
+
 COPY package*.json ./
 
 run npm install
@@ -20,7 +22,7 @@ WORKDIR /usr/src/app/backend
 
 COPY ./backend/ ./
 
-ENV POSTGRES_HOST=postgres
+WORKDIR /usr/src/app
 
 EXPOSE 5000
 
