@@ -4,7 +4,8 @@ services:
     build: .
     depends_on:
       - postgres
-    volumes: ./:/usr/src/app
+    volumes:
+      - ./:/usr/src/app
     ports:
       - '5000:5000'
   postgres:
